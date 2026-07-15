@@ -1,0 +1,26 @@
+{
+  "name": "訂單辨識",
+  "short_name": "訂單辨識",
+  "description": "出貨單拍照辨識，自動核對後寫入 Google Sheet 並存照片到 Drive",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F4F2",
+  "theme_color": "#F5F4F2",
+  "lang": "zh-Hant-TW",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

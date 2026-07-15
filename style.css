@@ -1,0 +1,805 @@
+/* ===== Design tokens ===== */
+:root {
+  --bg: #F6F5F2;
+  --surface: #FFFFFF;
+  --ink: #111110;
+  --ink-2: #6E6E6A;
+  --line: #E3E2DD;
+  --accent: #E85D00;
+  --ok: #1E7B34;
+  --warn: #B3261E;
+  --accent-tint: rgba(232, 93, 0, .08);
+  --warn-tint: rgba(179, 38, 30, .08);
+  --ok-tint: rgba(30, 123, 52, .10);
+  --radius: 12px;
+  --tap: 56px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161514;
+    --surface: #201F1D;
+    --ink: #F2F1EE;
+    --ink-2: #9B9A95;
+    --line: #34332F;
+    --accent: #E85D00;
+    --ok: #3FA35B;
+    --warn: #E0645A;
+    --accent-tint: rgba(232, 93, 0, .16);
+    --warn-tint: rgba(224, 100, 90, .14);
+    --ok-tint: rgba(63, 163, 91, .14);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif;
+  height: 100%;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button, input {
+  font-family: inherit;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ===== App shell ===== */
+.app-shell {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.view {
+  display: none;
+  min-height: 100dvh;
+  flex-direction: column;
+}
+
+.view.is-active {
+  display: flex;
+  animation: fade-in 150ms ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 1. 主畫面 ===== */
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 8px 0 20px;
+}
+
+.app-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.home-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 24px;
+}
+
+.shutter-ring {
+  width: clamp(148px, 46vw, 200px);
+  height: clamp(148px, 46vw, 200px);
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shutter-btn {
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transform: scale(1);
+  transition: transform 120ms ease-out;
+}
+
+.shutter-btn:active {
+  transform: scale(.96);
+}
+
+.icon-camera {
+  width: 34%;
+  height: 34%;
+}
+
+.shutter-hint {
+  font-size: 15px;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.pill-btn {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: none;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pill-btn:active {
+  background: var(--accent-tint);
+}
+
+.pill-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.home-footer {
+  padding: 16px 20px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom) + 16px);
+}
+
+.setup-hint {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  background: var(--accent-tint);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 13px;
+  text-align: center;
+}
+
+.footer-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.footer-row svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-2);
+  flex-shrink: 0;
+}
+
+.footer-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 0 16px;
+}
+
+/* ===== 2. 辨識中 ===== */
+.processing-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+}
+
+.thumb-wrap {
+  width: 70%;
+  max-width: 320px;
+  aspect-ratio: 3/4;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.processing-text {
+  font-size: 17px;
+  color: var(--ink);
+  margin: 0;
+}
+
+.error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  width: 100%;
+}
+
+.error-box .icon-warning {
+  width: 24px;
+  height: 24px;
+  color: var(--warn);
+}
+
+.error-msg {
+  font-size: 15px;
+  color: var(--warn);
+  margin: 0;
+  text-align: center;
+}
+
+/* ===== 通用：header ===== */
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.review-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.icon-btn, .icon-btn-spacer {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-progress {
+  width: 44px;
+  font-size: 13px;
+  color: var(--ink-2);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== 通用：card / field ===== */
+.review-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card-block {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.block-title {
+  font-size: 13px;
+  color: var(--ink-2);
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+.block-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.block-title-row .block-title {
+  margin: 0;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 12px;
+}
+
+.field-grid-totals {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field-grid-readonly {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.field-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.field-input {
+  min-height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 14px;
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--surface);
+  width: 100%;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field-readonly {
+  font-size: 15px;
+  color: var(--ink-2);
+  padding: 8px 0;
+}
+
+.input-with-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-btn .field-input {
+  padding-right: 48px;
+}
+
+.btn-eye {
+  position: absolute;
+  right: 6px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-eye svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* 數字欄位：等寬數字 + 靠右對齊 */
+input[inputmode="decimal"] {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ===== 明細卡片 ===== */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  background: var(--bg);
+}
+
+.item-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.item-card-seq-label {
+  font-size: 13px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.item-input {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 10px;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--surface);
+  width: 100%;
+}
+
+.item-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.item-seq {
+  flex: 1;
+  font-weight: 600;
+}
+
+.btn-item-delete {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--warn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-item-delete svg {
+  width: 20px;
+  height: 20px;
+}
+
+.item-card .field-grid {
+  gap: 8px;
+}
+
+.btn-add {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: none;
+  color: var(--accent);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ===== 警示 banner（金額不符／辨識失敗／送出失敗） ===== */
+.warn-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--warn-tint);
+  border-radius: var(--radius);
+  color: var(--warn);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.warn-banner .icon-warning {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ===== 3. 佇列畫面 ===== */
+.queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.queue-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px;
+}
+
+.queue-card.is-tappable {
+  cursor: pointer;
+}
+
+.queue-card.is-tappable:active {
+  background: var(--accent-tint);
+}
+
+.queue-card-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+.queue-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.queue-card-no {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.status-queued { background: var(--line); color: var(--ink-2); }
+.status-recognizing { background: var(--accent-tint); color: var(--accent); }
+.status-recognizing::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-tint);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+.status-review { background: var(--accent-tint); color: var(--accent); font-weight: 600; }
+.status-done { background: var(--ok-tint); color: var(--ok); }
+.status-failed { background: var(--warn-tint); color: var(--warn); }
+
+.btn-queue-retry {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--warn);
+  border-radius: 10px;
+  background: none;
+  color: var(--warn);
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-queue-retry svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== 底部按鈕 ===== */
+.review-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.btn-primary {
+  min-height: var(--tap);
+  width: 100%;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-primary:active {
+  opacity: 0.85;
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.btn-ghost {
+  min-height: var(--tap);
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--accent);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-secondary {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ===== 5. 完成畫面（也用於批次總結） ===== */
+.done-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.done-check svg {
+  width: 72px;
+  height: 72px;
+}
+
+#done-check-path {
+  stroke-dasharray: 32;
+  stroke-dashoffset: 32;
+}
+
+#done-check-path.draw-anim {
+  animation: draw-check 250ms ease-out forwards;
+}
+
+@keyframes draw-check {
+  to { stroke-dashoffset: 0; }
+}
+
+.done-text {
+  font-size: 17px;
+  color: var(--ink);
+  margin: 0;
+  text-align: center;
+}
+
+.done-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ===== 6. 設定畫面 ===== */
+.settings-save {
+  margin-top: 4px;
+}
+
+.settings-footer {
+  text-align: center;
+  padding: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+/* ===== 全域 toast（設定匯入等輕量回饋） ===== */
+.global-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  transform: translateX(-50%) translateY(8px);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  z-index: 100;
+  max-width: calc(100% - 48px);
+  text-align: center;
+  pointer-events: none;
+}
+
+.global-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

@@ -4,7 +4,7 @@
  * 訂單辨識 PWA — 前端邏輯（純原生 JS，無框架、無 build step）
  * ========================================================= */
 
-const APP_VERSION = 'v1.2.0';
+const APP_VERSION = 'v1.2.1';
 
 /* ---- 固定連結（試算表 ID 固定，不放進設定） ---- */
 const SHEET_ID = '1xB-hiIh6r-EizWqz80bbYT7p_OpNT36aZzz0KE9tVrA';
@@ -537,6 +537,7 @@ async function recognizeItem(item) {
     return false;
   }
   item.status = STATUS.RECOGNIZING;
+  if (appState.batchMode) renderQueueList(); // 讓佇列卡片在等待 Gemini 期間即時顯示「辨識中」而非停在「等待中」
   try {
     const result = await callGemini(item.base64, item.mime, cfg.apiKey, cfg.model || DEFAULT_MODEL);
     item.result = result;
@@ -695,6 +696,12 @@ async function handleCameraFile(file) {
 async function handleAlbumFiles(fileList) {
   const files = Array.from(fileList || []);
   if (!files.length) return;
+
+  // 只選 1 張時走單張流程（有清楚的「辨識中…」全螢幕畫面），不繞佇列。
+  if (files.length === 1) {
+    await handleCameraFile(files[0]);
+    return;
+  }
 
   appState.batchMode = true;
   appState.queue = [];

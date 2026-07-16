@@ -229,6 +229,14 @@
 
     <div class="review-scroll">
       <section class="card-block">
+        <label class="field">
+          <span class="field-label">貼上設定連結（快速匯入，免手打金鑰）</span>
+          <input class="field-input" id="cfg-import" type="text" inputmode="url" placeholder="貼上 https://…/#cfg=… 連結">
+        </label>
+        <button id="btn-import-config" class="btn-secondary settings-save" type="button">從連結匯入</button>
+      </section>
+
+      <section class="card-block">
         <div class="field-col">
           <label class="field">
             <span class="field-label">輸入人員</span>
@@ -271,7 +279,7 @@
     </div>
 
     <footer class="settings-footer">
-      <span id="app-version">v1.1.0</span>
+      <span id="app-version">v1.3.0</span>
     </footer>
   </section>
 

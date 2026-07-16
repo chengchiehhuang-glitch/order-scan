@@ -4,7 +4,7 @@
  * 訂單辨識 PWA — 前端邏輯（純原生 JS，無框架、無 build step）
  * ========================================================= */
 
-const APP_VERSION = 'v1.2.1';
+const APP_VERSION = 'v1.3.0';
 
 /* ---- 固定連結（試算表 ID 固定，不放進設定） ---- */
 const SHEET_ID = '1xB-hiIh6r-EizWqz80bbYT7p_OpNT36aZzz0KE9tVrA';
@@ -217,22 +217,33 @@ function base64UrlDecodeUtf8(input) {
   return new TextDecoder('utf-8').decode(bytes);
 }
 
+// 把設定物件寫進 localStorage（只寫有值的欄位，沒帶到的維持原設定）。
+function applyImportedConfig(cfg) {
+  if (!cfg || typeof cfg !== 'object') throw new Error('匯入內容不是合法物件');
+  if (cfg.operator) localStorage.setItem(LS_KEYS.operator, String(cfg.operator));
+  if (cfg.apiKey) localStorage.setItem(LS_KEYS.apiKey, String(cfg.apiKey));
+  if (cfg.model) localStorage.setItem(LS_KEYS.model, String(cfg.model));
+  if (cfg.gasUrl) localStorage.setItem(LS_KEYS.gasUrl, String(cfg.gasUrl));
+  if (cfg.secret) localStorage.setItem(LS_KEYS.secret, String(cfg.secret));
+}
+
+// 從「整條連結」或「純代碼」解析出設定物件。
+function parseCfgPayload(raw) {
+  let s = String(raw).trim();
+  const idx = s.lastIndexOf('cfg=');
+  if (idx >= 0) s = s.slice(idx + 4);
+  s = s.split('&')[0].split('#')[0].trim();
+  if (!s) throw new Error('沒有找到設定代碼');
+  return JSON.parse(base64UrlDecodeUtf8(s));
+}
+
 function importConfigFromHash() {
   const hash = window.location.hash || '';
   const match = hash.match(/^#cfg=([^&]+)$/);
   if (!match) return;
 
   try {
-    const jsonStr = base64UrlDecodeUtf8(match[1]);
-    const cfg = JSON.parse(jsonStr);
-    if (!cfg || typeof cfg !== 'object') throw new Error('匯入內容不是合法物件');
-
-    if (cfg.operator) localStorage.setItem(LS_KEYS.operator, String(cfg.operator));
-    if (cfg.apiKey) localStorage.setItem(LS_KEYS.apiKey, String(cfg.apiKey));
-    if (cfg.model) localStorage.setItem(LS_KEYS.model, String(cfg.model));
-    if (cfg.gasUrl) localStorage.setItem(LS_KEYS.gasUrl, String(cfg.gasUrl));
-    if (cfg.secret) localStorage.setItem(LS_KEYS.secret, String(cfg.secret));
-
+    applyImportedConfig(JSON.parse(base64UrlDecodeUtf8(match[1])));
     history.replaceState(null, '', window.location.pathname + window.location.search);
     showToast('設定已匯入');
   } catch (err) {
@@ -955,6 +966,20 @@ function bindEvents() {
   $('btn-settings-back').addEventListener('click', () => {
     refreshHomeHint();
     showView('view-home');
+  });
+  $('btn-import-config').addEventListener('click', () => {
+    const raw = $('cfg-import').value.trim();
+    if (!raw) { showToast('請先貼上設定連結'); return; }
+    try {
+      applyImportedConfig(parseCfgPayload(raw));
+      populateSettingsForm();
+      $('cfg-import').value = '';
+      refreshHomeHint();
+      showToast('設定已匯入');
+    } catch (err) {
+      console.warn('貼上匯入失敗：', err);
+      showToast('連結格式不正確，請重新複製整條連結');
+    }
   });
   $('btn-save-settings').addEventListener('click', () => {
     saveConfigFromForm();

@@ -4,7 +4,7 @@
  * 快取策略：網頁/程式碼「網路優先」（每次打開就是最新版，不用清快取／不用重裝），
  * 圖示等靜態資源「快取優先」保離線速度。僅攔截同源 GET。 */
 
-const CACHE_VERSION = 'v1.4.0';
+const CACHE_VERSION = 'v1.5.0';
 const CACHE_NAME = `orderscan-shell-${CACHE_VERSION}`;
 
 const SHELL_FILES = [

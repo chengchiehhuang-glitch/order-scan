@@ -4,7 +4,7 @@
  * 訂單辨識 PWA — 前端邏輯（純原生 JS，無框架、無 build step）
  * ========================================================= */
 
-const APP_VERSION = 'v1.3.0';
+const APP_VERSION = 'v1.3.1';
 
 /* ---- 固定連結（試算表 ID 固定，不放進設定） ---- */
 const SHEET_ID = '1xB-hiIh6r-EizWqz80bbYT7p_OpNT36aZzz0KE9tVrA';
@@ -20,8 +20,9 @@ const LS_KEYS = {
   gasUrl: LS_PREFIX + 'gasUrl',
   secret: LS_PREFIX + 'secret',
 };
-// 用 -latest 別名指向 Google 當前 flash 穩定版，避免某個版本被下架後整個辨識掛掉。
-const DEFAULT_MODEL = 'gemini-flash-latest';
+// 用 lite 版：辨識固定表格不需推理，比 flash-latest 快約 8 倍（實測 22s → 3s）、準確度相同。
+// 都用 -latest 別名指向當前穩定版，避免某版本被下架後辨識掛掉。
+const DEFAULT_MODEL = 'gemini-flash-lite-latest';
 const FALLBACK_MODEL = 'gemini-flash-latest';
 // 通行碼不內嵌在公開網站裡：由「設定一鍵匯入連結」(#cfg=) 私下配發，
 // 或在設定頁手動輸入。實際值必須與 GAS 部署版的 SECRET 一致。

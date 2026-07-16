@@ -4,7 +4,7 @@
  * 快取策略：stale-while-revalidate，僅攔截同源 GET 請求。
  * 升版時請同步更新下面的 CACHE_NAME 版本字串，讓舊快取自動失效。 */
 
-const CACHE_VERSION = 'v1.3.0';
+const CACHE_VERSION = 'v1.3.1';
 const CACHE_NAME = `orderscan-shell-${CACHE_VERSION}`;
 
 const SHELL_FILES = [

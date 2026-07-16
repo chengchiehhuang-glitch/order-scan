@@ -4,7 +4,7 @@
  * 訂單辨識 PWA — 前端邏輯（純原生 JS，無框架、無 build step）
  * ========================================================= */
 
-const APP_VERSION = 'v1.3.1';
+const APP_VERSION = 'v1.4.0';
 
 /* ---- 固定連結（試算表 ID 固定，不放進設定） ---- */
 const SHEET_ID = '1xB-hiIh6r-EizWqz80bbYT7p_OpNT36aZzz0KE9tVrA';

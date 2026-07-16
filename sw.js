@@ -1,10 +1,10 @@
 'use strict';
 
 /* 訂單辨識 PWA — Service Worker
- * 快取策略：stale-while-revalidate，僅攔截同源 GET 請求。
- * 升版時請同步更新下面的 CACHE_NAME 版本字串，讓舊快取自動失效。 */
+ * 快取策略：網頁/程式碼「網路優先」（每次打開就是最新版，不用清快取／不用重裝），
+ * 圖示等靜態資源「快取優先」保離線速度。僅攔截同源 GET。 */
 
-const CACHE_VERSION = 'v1.3.1';
+const CACHE_VERSION = 'v1.4.0';
 const CACHE_NAME = `orderscan-shell-${CACHE_VERSION}`;
 
 const SHELL_FILES = [
@@ -40,19 +40,33 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  const path = new URL(req.url).pathname;
+  // 網頁／JS／CSS／manifest：網路優先——打開就是最新版；離線才退回快取。
+  const isShell = req.mode === 'navigate' || path.endsWith('/') || /\.(html|js|css|webmanifest)$/.test(path);
+
+  if (isShell) {
+    event.respondWith(
+      fetch(req)
+        .then((networkRes) => {
+          if (networkRes && networkRes.ok) {
+            const copy = networkRes.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
+          return networkRes;
+        })
+        .catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // 圖示等靜態資源：快取優先保離線速度，順手回填快取。
   event.respondWith(
-    caches.open(CACHE_NAME).then((cache) =>
-      cache.match(req).then((cached) => {
-        const networkFetch = fetch(req)
-          .then((networkRes) => {
-            if (networkRes && networkRes.ok) {
-              cache.put(req, networkRes.clone());
-            }
-            return networkRes;
-          })
-          .catch(() => cached); // 離線時退回快取
-        return cached || networkFetch;
-      })
-    )
+    caches.match(req).then((cached) => cached || fetch(req).then((networkRes) => {
+      if (networkRes && networkRes.ok) {
+        const copy = networkRes.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+      }
+      return networkRes;
+    }))
   );
 });

@@ -55,7 +55,6 @@
     <input id="file-input-multi" type="file" accept="image/*" multiple hidden>
 
     <footer class="home-footer">
-      <div id="setup-hint" class="setup-hint" hidden>尚未設定 API Key／GAS 網址，請先到設定完成初始化</div>
       <div class="footer-card">
         <a id="link-sheet" class="footer-row" href="#" target="_blank" rel="noopener">
           <span>開啟試算表</span>
@@ -229,57 +228,23 @@
 
     <div class="review-scroll">
       <section class="card-block">
-        <label class="field">
-          <span class="field-label">貼上設定連結（快速匯入，免手打金鑰）</span>
-          <input class="field-input" id="cfg-import" type="text" inputmode="url" placeholder="貼上 https://…/#cfg=… 連結">
-        </label>
-        <button id="btn-import-config" class="btn-secondary settings-save" type="button">從連結匯入</button>
-      </section>
-
-      <section class="card-block">
         <div class="field-col">
           <label class="field">
-            <span class="field-label">輸入人員</span>
+            <span class="field-label">輸入人員（記錄是誰登記的，可留空）</span>
             <input class="field-input" id="cfg-operator" type="text" placeholder="姓名">
-          </label>
-
-          <label class="field">
-            <span class="field-label">Gemini API Key</span>
-            <div class="input-with-btn">
-              <input class="field-input" id="cfg-apikey" type="password" placeholder="AIza...">
-              <button id="btn-toggle-key" class="btn-eye" type="button" aria-label="顯示/隱藏">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.5"/></svg>
-              </button>
-            </div>
-          </label>
-
-          <label class="field">
-            <span class="field-label">Gemini 模型</span>
-            <input class="field-input" id="cfg-model" type="text" placeholder="gemini-flash-lite-latest">
-          </label>
-
-          <label class="field">
-            <span class="field-label">GAS 網址</span>
-            <input class="field-input" id="cfg-gasurl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
-          </label>
-
-          <label class="field">
-            <span class="field-label">通行碼</span>
-            <div class="input-with-btn">
-              <input class="field-input" id="cfg-secret" type="password" placeholder="通行碼">
-              <button id="btn-toggle-secret" class="btn-eye" type="button" aria-label="顯示/隱藏">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.5"/></svg>
-              </button>
-            </div>
           </label>
         </div>
 
         <button id="btn-save-settings" class="btn-primary settings-save" type="button">儲存</button>
       </section>
+
+      <section class="card-block">
+        <p class="field-label" style="margin:0">辨識金鑰與伺服器已內建在系統，這台裝置不需要設定，打開就能用。</p>
+      </section>
     </div>
 
     <footer class="settings-footer">
-      <span id="app-version">v1.4.0</span>
+      <span id="app-version">v1.5.0</span>
     </footer>
   </section>
 

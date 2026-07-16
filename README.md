@@ -61,7 +61,7 @@ python3 -m http.server 4713 --directory web
 |---|---|
 | 輸入人員 | 會寫進 Sheet 的「輸入人員」欄，並顯示在核對畫面唯讀區 |
 | Gemini API Key | 從 [Google AI Studio](https://aistudio.google.com/apikey) 取得 |
-| Gemini 模型 | 預設 `gemini-2.5-flash` |
+| Gemini 模型 | 預設 `gemini-flash-latest`（自動指向當前 flash 穩定版；模型 404 時 app 會自動 fallback 到它） |
 | GAS 網址 | 見下方「GAS 部署步驟」，部署完成後的 `/exec` 網址 |
 | 通行碼 | 需與 `gas/Code.gs` 裡的 `SECRET` 常數一致（見下方安全性提醒） |
 
@@ -79,7 +79,7 @@ JSON 欄位（全部選填，沒帶到的欄位維持原本設定不變）：
 {
   "operator": "王小明",
   "apiKey": "AIza...",
-  "model": "gemini-2.5-flash",
+  "model": "gemini-flash-latest",
   "gasUrl": "https://script.google.com/macros/s/xxx/exec",
   "secret": "<與 GAS 部署版一致的通行碼>"
 }

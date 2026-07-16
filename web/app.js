@@ -4,7 +4,7 @@
  * 訂單辨識 PWA — 前端邏輯（純原生 JS，無框架、無 build step）
  * ========================================================= */
 
-const APP_VERSION = 'v1.1.0';
+const APP_VERSION = 'v1.2.0';
 
 /* ---- 固定連結（試算表 ID 固定，不放進設定） ---- */
 const SHEET_ID = '1xB-hiIh6r-EizWqz80bbYT7p_OpNT36aZzz0KE9tVrA';
@@ -20,7 +20,9 @@ const LS_KEYS = {
   gasUrl: LS_PREFIX + 'gasUrl',
   secret: LS_PREFIX + 'secret',
 };
-const DEFAULT_MODEL = 'gemini-2.5-flash';
+// 用 -latest 別名指向 Google 當前 flash 穩定版，避免某個版本被下架後整個辨識掛掉。
+const DEFAULT_MODEL = 'gemini-flash-latest';
+const FALLBACK_MODEL = 'gemini-flash-latest';
 // 通行碼不內嵌在公開網站裡：由「設定一鍵匯入連結」(#cfg=) 私下配發，
 // 或在設定頁手動輸入。實際值必須與 GAS 部署版的 SECRET 一致。
 const DEFAULT_SECRET = '';
@@ -309,6 +311,10 @@ async function callGemini(base64, mime, apiKey, model) {
       const e = new Error('額度用盡或呼叫過快，請稍後再試');
       e.status = 429;
       throw e;
+    }
+    // 模型被下架 / 打錯模型名（404）→ 自動改用當前 flash 穩定版重試一次，避免整個辨識卡死。
+    if (res.status === 404 && model !== FALLBACK_MODEL) {
+      return callGemini(base64, mime, apiKey, FALLBACK_MODEL);
     }
     let detail = '';
     try {
